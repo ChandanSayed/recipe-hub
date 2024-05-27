@@ -12,8 +12,8 @@ import AddRecipe from "./pages/AddRecipe.jsx";
 import axios from "axios";
 import { Provider } from "react-redux";
 import store from "./redux/store.jsx";
-import CoinDetails from "./pages/CoinDetails.jsx";
 import PurchaseCoin from "./pages/PurchaseCoin.jsx";
+import RecipeDetails from "./pages/RecipeDetails.jsx";
 
 axios.defaults.baseURL = "http://localhost:8000/";
 
@@ -37,7 +37,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/recipe-details/:id",
-        element: <CoinDetails />
+        element: <RecipeDetails />
       },
       {
         path: "/purchase-coin",

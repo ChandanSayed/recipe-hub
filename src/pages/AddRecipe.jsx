@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import UploadImage from "../components/add-recipe/UploadImage";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
+import { useSelector } from "react-redux";
 
 const AddRecipe = () => {
+  const userDetails = useSelector(state => state.userData.value);
   const [recipeData, setRecipeData] = useState({
     recipeName: "",
     recipeImage: null,
@@ -13,7 +15,7 @@ const AddRecipe = () => {
     youtubeCode: "",
     country: "",
     category: "",
-    creatorEmail: "test@test.com",
+    creatorEmail: userDetails?.email,
     watchCount: 0,
     purchased_by: []
   });
@@ -59,14 +61,15 @@ const AddRecipe = () => {
 
       if (res.data.insertedId) {
         notify();
-        setRecipeData({
+        setRecipeData(prev => ({
+          ...prev,
           recipeName: "",
           recipeImage: null,
           recipeDetails: "",
           youtubeCode: "",
           country: "",
           category: ""
-        });
+        }));
       }
       setIsDisabled(false);
       setErrors({});
@@ -153,7 +156,7 @@ const AddRecipe = () => {
         <button
           type="submit"
           disabled={isDisabled}
-          className="w-full py-2 text-white px-4 rounded-lg hover:bg-opacity-90 bg-dark-blue hover:text-white shadow-lg"
+          className="w-full py-2 text-white px-4 rounded-lg hover:bg-opacity-70 bg-dark-blue hover:text-white shadow-lg"
         >
           Submit Recipe
         </button>

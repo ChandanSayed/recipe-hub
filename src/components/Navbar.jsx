@@ -1,10 +1,91 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, Navigate } from "react-router-dom";
 import { CiMenuBurger } from "react-icons/ci";
 import { RiCloseLine } from "react-icons/ri";
+import app from "../firebase/firebase.init";
+import {
+  GoogleAuthProvider,
+  getAuth,
+  onAuthStateChanged,
+  signInWithPopup,
+  signOut
+} from "firebase/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserData } from "../redux/features/user/userSlice";
+import axios from "axios";
 
 const Navbar = () => {
   const [dropDownState, setDropDownState] = useState(false);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  const userDetails = useSelector(state => state.userData.value);
+  const dispatch = useDispatch();
+
+  async function getData(user, dispatch) {
+    console.log(user.email);
+    const res = await axios.get(`/user?email=${user.email}`);
+    console.log(res.data);
+    if (await res.data) {
+      dispatch(getUserData(res.data));
+    } else {
+      dispatch(getUserData(null));
+    }
+  }
+
+  function handleGoogleSignIn() {
+    signInWithPopup(auth, provider)
+      .then(async result => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        // The signed-in user info.
+        const user = result.user;
+        // IdP data available using getAdditionalUserInfo(result)
+        // ...
+
+        const res = await axios.post("/login", {
+          name: user.displayName,
+          email: user.email,
+          image: user.photoURL,
+          coin: 50
+        });
+        dispatch(getUserData(res.data));
+      })
+      .catch(error => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.customData.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
+      });
+  }
+
+  function handleLogout() {
+    signOut(auth)
+      .then(() => {
+        dispatch(getUserData(null));
+        return <Navigate to={"/"} />;
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  useEffect(() => {
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        const uid = user.uid;
+        getData(user, dispatch);
+      } else {
+        console.log("User is signed out");
+        dispatch(getUserData(null));
+      }
+    });
+  }, []);
 
   return (
     <nav className="container mx-auto flex items-center justify-between px-4 py-4">
@@ -14,6 +95,21 @@ const Navbar = () => {
 
       <ul className="hidden items-center justify-between gap-10 md:flex">
         <NavLinks />
+        {userDetails?.name ? (
+          <button
+            className="bg-dark-white px-3 py-1.5 hover:bg-dark-blue hover:text-white rounded"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        ) : (
+          <button
+            className="bg-dark-white px-3 py-1.5 hover:bg-dark-blue hover:text-white rounded"
+            onClick={handleGoogleSignIn}
+          >
+            Login
+          </button>
+        )}
       </ul>
       <div className="relative flex transition-transform md:hidden">
         {!dropDownState ? (

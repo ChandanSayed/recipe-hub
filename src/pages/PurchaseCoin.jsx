@@ -1,4 +1,5 @@
 import PurchaseCard from "../components/purchase-coin/PurchaseCard";
+import Payment from "../components/stripe/Payment";
 
 const PurchaseCoin = () => {
   const cards = [
@@ -28,6 +29,7 @@ const PurchaseCoin = () => {
           <PurchaseCard key={card.id} price={card.price} coin={card.coin} />
         ))}
       </div>
+      <Payment />
     </div>
   );
 };

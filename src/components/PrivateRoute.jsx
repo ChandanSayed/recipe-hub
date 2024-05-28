@@ -8,11 +8,12 @@ const PrivateRoute = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log(userDetails);
     if (!userDetails?.email) {
       toast.error("Please Login!");
       return navigate("/");
     }
-  }, []);
+  }, [userDetails, navigate]);
   return children;
 };
 

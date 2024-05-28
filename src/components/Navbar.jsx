@@ -22,17 +22,6 @@ const Navbar = () => {
   const userDetails = useSelector(state => state.userData.value);
   const dispatch = useDispatch();
 
-  async function getData(user, dispatch) {
-    console.log(user.email);
-    const res = await axios.get(`/user?email=${user.email}`);
-    console.log(res.data);
-    if (await res.data) {
-      dispatch(getUserData(res.data));
-    } else {
-      dispatch(getUserData(null));
-    }
-  }
-
   function handleGoogleSignIn() {
     signInWithPopup(auth, provider)
       .then(async result => {
@@ -74,18 +63,6 @@ const Navbar = () => {
         console.log(error);
       });
   }
-
-  useEffect(() => {
-    onAuthStateChanged(auth, user => {
-      if (user) {
-        const uid = user.uid;
-        getData(user, dispatch);
-      } else {
-        console.log("User is signed out");
-        dispatch(getUserData(null));
-      }
-    });
-  }, []);
 
   return (
     <nav className="container mx-auto flex items-center justify-between px-4 py-4">

@@ -48,7 +48,6 @@ const AddRecipe = () => {
 
   function handleValue(e) {
     const { name, value } = e.target;
-    console.log(name, value);
     setRecipeData(prev => ({ ...prev, [name]: value }));
   }
 
@@ -56,7 +55,6 @@ const AddRecipe = () => {
     e.preventDefault();
     setIsDisabled(true);
     if (validateForm()) {
-      console.log("Recipe submitted:", recipeData);
       const res = await axios.post("/add-recipe", recipeData);
 
       if (res.data.insertedId) {

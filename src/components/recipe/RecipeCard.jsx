@@ -23,8 +23,6 @@ function RecipeCard({ recipe }) {
     }
 
     if (userDetails.coin < 10) {
-      console.log(userDetails.coin);
-      console.log(userDetails.email, recipe.creatorEmail);
       // Redirect to purchase coins page
       toast.warning("You need to purchase more coins");
 

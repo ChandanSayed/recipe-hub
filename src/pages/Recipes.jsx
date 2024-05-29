@@ -9,7 +9,6 @@ const Recipes = () => {
 
   async function getRecipes() {
     const res = await axios.get("/all-recipes");
-    console.log(res.data);
     setAllRecipes(res.data);
     setLoading(false);
   }

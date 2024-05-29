@@ -1,5 +1,6 @@
 import { CardElement, Elements, useElements, useStripe } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import axios from "axios";
 import { useEffect, useState } from "react";
 
 const CheckoutForm = ({ clientSecret }) => {
@@ -51,7 +52,8 @@ const CheckoutForm = ({ clientSecret }) => {
     if (confirmError) {
       console.log(confirmError);
     } else {
-      console.log("Payment Successful", paymentIntent);
+      // console.log("Payment Successful", paymentIntent);
+      console.log("Payment Successful");
     }
   };
 
@@ -84,15 +86,21 @@ const stripePromise = loadStripe(import.meta.env.VITE_PK);
 const Payment = ({ price }) => {
   const [clientSecret, setClientSecret] = useState("");
 
+  async function getClientSecret() {
+    const res = await axios.post("/create-payment-intent", { price });
+    setClientSecret(res.data.clientSecret);
+  }
+
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads
-    fetch("http://localhost:8000/create-payment-intent", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ price: price })
-    })
-      .then(res => res.json())
-      .then(data => setClientSecret(data.clientSecret));
+    // fetch("http://localhost:8000/create-payment-intent", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ price: price })
+    // })
+    //   .then(res => res.json())
+    //   .then(data => setClientSecret(data.clientSecret));
+    getClientSecret();
   }, []);
 
   const appearance = {
@@ -102,8 +110,6 @@ const Payment = ({ price }) => {
     clientSecret,
     appearance
   };
-
-  console.log(clientSecret);
 
   return (
     <div>

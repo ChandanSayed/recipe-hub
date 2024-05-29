@@ -5,7 +5,7 @@ import axios from "axios";
 
 const RecipeDetails = () => {
   const { id } = useParams();
-  console.log(id);
+
   const [recipe, setRecipe] = useState({
     category: "",
     country: "",
@@ -23,7 +23,6 @@ const RecipeDetails = () => {
     axios
       .get(`/recipe/${id}`)
       .then(res => {
-        console.log(res.data);
         setRecipe(res.data);
       })
       .catch(err => {

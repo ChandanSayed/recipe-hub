@@ -13,15 +13,13 @@ import Loader from "./components/Loader";
 function App() {
   const dispatch = useDispatch();
   const auth = getAuth(app);
-  const userDetails = useSelector(state => state.userData.value);
   const loading = useSelector(state => state.userData.loading);
 
   useEffect(() => {
     const fetchData = async user => {
-      console.log(user.email);
       try {
         const res = await axios.get(`/user?email=${user.email}`);
-        console.log(res.data);
+
         if (res.data) {
           dispatch(getUserData(res.data));
         } else {

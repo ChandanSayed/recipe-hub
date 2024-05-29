@@ -6,53 +6,55 @@ const CheckoutForm = ({ clientSecret }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [success, setSuccess] = useState(null);
 
   const handleSubmit = async event => {
-    // Block native form submission.
     event.preventDefault();
 
     if (!stripe || !elements) {
-      // Stripe.js has not loaded yet. Make sure to disable
-      // form submission until Stripe.js has loaded.
       return;
     }
 
-    // Get a reference to a mounted CardElement. Elements knows how
-    // to find your CardElement because there can only ever be one of
-    // each type of element.
     const card = elements.getElement(CardElement);
 
-    if (card == null) {
+    if (!card) {
       return;
     }
 
-    // Use your card Element with other Stripe.js APIs
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
+    setIsProcessing(true);
+
+    const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
       type: "card",
       card
     });
 
-    if (error) {
-      console.log("[error]", error);
-      setError(error.message);
+    if (paymentMethodError) {
+      setError(paymentMethodError.message);
+      setIsProcessing(false);
+      return;
     } else {
-      console.log("[PaymentMethod]", paymentMethod);
       setError(null);
     }
 
-    const { paymentIntent, error: confirmError } = await stripe.confirmCardPayment(clientSecret, {
+    const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
         card: card,
         billing_details: {
-          name: "test"
+          name: "Test User"
         }
       }
     });
+
     if (confirmError) {
-      console.log(confirmError);
+      setError(confirmError.message);
     } else {
-      console.log("Payment Successful", paymentIntent);
+      setSuccess("Payment Successful!");
+      console.log(paymentIntent);
+      setError(null);
     }
+
+    setIsProcessing(false);
   };
 
   return (
@@ -73,10 +75,15 @@ const CheckoutForm = ({ clientSecret }) => {
           }
         }}
       />
-      <button type="submit" disabled={!stripe}>
-        Pay
+      <button
+        type="submit"
+        disabled={!stripe || isProcessing}
+        className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+      >
+        {isProcessing ? "Processing…" : "Pay"}
       </button>
-      <p className="text-red-500">{error}</p>
+      {error && <p className="text-red-500 mt-2">{error}</p>}
+      {success && <p className="text-green-500 mt-2">{success}</p>}
     </form>
   );
 };
@@ -102,8 +109,6 @@ const Payment = ({ price }) => {
     clientSecret,
     appearance
   };
-
-  console.log(clientSecret);
 
   return (
     <div>

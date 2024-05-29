@@ -11,11 +11,12 @@ const Recipes = () => {
     const res = await axios.get("/all-recipes");
     console.log(res.data);
     setAllRecipes(res.data);
+    setLoading(false);
   }
 
   useEffect(() => {
+    setLoading(true);
     getRecipes();
-    setLoading(false);
   }, []);
 
   if (loading) {

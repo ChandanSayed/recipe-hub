@@ -29,7 +29,7 @@ const PurchaseCoin = () => {
           <PurchaseCard key={card.id} price={card.price} coin={card.coin} />
         ))}
       </div>
-      <Payment />
+      <Payment price={2} />
     </div>
   );
 };

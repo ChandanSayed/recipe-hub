@@ -3,10 +3,23 @@ import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const CheckoutForm = ({ clientSecret }) => {
+const CheckoutForm = ({ clientSecret, setOpenModal }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [success, setSuccess] = useState(null);
+
+  const resetForm = () => {
+    setError(null);
+    setIsProcessing(false);
+    setSuccess(null);
+    setOpenModal(false);
+    const card = elements.getElement(CardElement);
+    if (card) {
+      card.clear();
+    }
+  };
 
   const handleSubmit = async event => {
     // Block native form submission.
@@ -27,6 +40,8 @@ const CheckoutForm = ({ clientSecret }) => {
       return;
     }
 
+    setIsProcessing(true);
+
     // Use your card Element with other Stripe.js APIs
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: "card",
@@ -36,8 +51,10 @@ const CheckoutForm = ({ clientSecret }) => {
     if (error) {
       console.log("[error]", error);
       setError(error.message);
+      setIsProcessing(false);
+      return;
     } else {
-      console.log("[PaymentMethod]", paymentMethod);
+      // console.log("[PaymentMethod]", paymentMethod);
       setError(null);
     }
 
@@ -52,9 +69,11 @@ const CheckoutForm = ({ clientSecret }) => {
     if (confirmError) {
       console.log(confirmError);
     } else {
-      // console.log("Payment Successful", paymentIntent);
-      console.log("Payment Successful");
+      console.log("Payment Successful", paymentIntent);
+      setSuccess("Payment Successful!");
+      resetForm();
     }
+    setIsProcessing(false);
   };
 
   return (
@@ -75,15 +94,20 @@ const CheckoutForm = ({ clientSecret }) => {
           }
         }}
       />
-      <button type="submit" disabled={!stripe}>
-        Pay
+      <button
+        type="submit"
+        disabled={!stripe || isProcessing}
+        className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+      >
+        {isProcessing ? "Processing…" : "Pay"}
       </button>
-      <p className="text-red-500">{error}</p>
+      {error && <p className="text-red-500 mt-2">{error}</p>}
+      {success && <p className="text-green-500 mt-2">{success}</p>}
     </form>
   );
 };
 const stripePromise = loadStripe(import.meta.env.VITE_PK);
-const Payment = ({ price }) => {
+const Payment = ({ price, setOpenModal }) => {
   const [clientSecret, setClientSecret] = useState("");
 
   async function getClientSecret() {
@@ -101,7 +125,8 @@ const Payment = ({ price }) => {
     //   .then(res => res.json())
     //   .then(data => setClientSecret(data.clientSecret));
     getClientSecret();
-  }, []);
+    console.log(price);
+  }, [price]);
 
   const appearance = {
     theme: "stripe"
@@ -115,7 +140,7 @@ const Payment = ({ price }) => {
     <div>
       {clientSecret && (
         <Elements stripe={stripePromise} options={options}>
-          <CheckoutForm clientSecret={clientSecret} />
+          <CheckoutForm clientSecret={clientSecret} setOpenModal={setOpenModal} />
         </Elements>
       )}
     </div>

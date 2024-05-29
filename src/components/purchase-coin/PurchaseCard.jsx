@@ -1,4 +1,4 @@
-const PurchaseCard = ({ price, coin }) => {
+const PurchaseCard = ({ price, coin, handlePurchase }) => {
   return (
     <>
       <div className="bg-white p-8 shadow">
@@ -9,7 +9,10 @@ const PurchaseCard = ({ price, coin }) => {
           </span>
           <span className="text-sm">/{coin} coins</span>
         </div>
-        <button className="w-full py-2 text-white px-4 rounded-lg hover:bg-opacity-70 bg-dark-blue hover:text-white shadow-lg">
+        <button
+          className="w-full py-2 text-white px-4 rounded-lg hover:bg-opacity-70 bg-dark-blue hover:text-white shadow-lg"
+          onClick={() => handlePurchase(price)}
+        >
           Purchases
         </button>
       </div>

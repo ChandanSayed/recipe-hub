@@ -38,6 +38,7 @@ const Recipes = () => {
         hasMore &&
         !loading
       ) {
+        initialRender.current = false;
         setPage(prevPage => prevPage + 1);
       }
     };

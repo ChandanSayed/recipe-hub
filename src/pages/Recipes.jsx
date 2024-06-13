@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import RecipeCard from "../components/recipe/RecipeCard";
 import Loader from "../components/Loader";
 
@@ -8,14 +8,13 @@ const Recipes = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const initialRender = useRef(true);
 
   const getRecipes = async () => {
     setLoading(true);
     try {
       const res = await axios.get(`/all-recipes?page=${page}&limit=8`);
-      console.log(res.data);
       setAllRecipes(prevRecipes => [...prevRecipes, ...res.data]);
-      // Check if the response has less items than the limit, indicating no more items to load
       setHasMore(res.data.length === 8);
     } catch (error) {
       console.error("Failed to load recipes", error);
@@ -25,7 +24,11 @@ const Recipes = () => {
   };
 
   useEffect(() => {
-    getRecipes();
+    if (initialRender.current) {
+      initialRender.current = false;
+    } else {
+      getRecipes();
+    }
   }, [page]);
 
   useEffect(() => {

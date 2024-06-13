@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import { ToastContainer } from "react-toastify";
@@ -14,7 +14,7 @@ function App() {
   const dispatch = useDispatch();
   const auth = getAuth(app);
   const loading = useSelector(state => state.userData.loading);
-
+  const location = useLocation();
   useEffect(() => {
     const fetchData = async user => {
       try {
@@ -54,7 +54,7 @@ function App() {
     <>
       <Header />
       <Outlet />
-      <Footer />
+      {location.pathname !== "/recipes" && <Footer />}
       <ToastContainer />
     </>
   );

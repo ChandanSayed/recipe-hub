@@ -8,7 +8,7 @@ const Recipes = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-  const initialRender = useRef(true);
+  // const initialRender = useRef(true);
 
   const getRecipes = async () => {
     setLoading(true);
@@ -24,11 +24,11 @@ const Recipes = () => {
   };
 
   useEffect(() => {
-    if (initialRender.current) {
-      initialRender.current = false;
-    } else {
-      getRecipes();
-    }
+    // if (initialRender.current) {
+    //   initialRender.current = false;
+    //   return
+    // }
+    getRecipes();
   }, [page]);
 
   useEffect(() => {
@@ -38,7 +38,6 @@ const Recipes = () => {
         hasMore &&
         !loading
       ) {
-        initialRender.current = false;
         setPage(prevPage => prevPage + 1);
       }
     };

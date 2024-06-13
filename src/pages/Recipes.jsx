@@ -4,30 +4,54 @@ import RecipeCard from "../components/recipe/RecipeCard";
 import Loader from "../components/Loader";
 
 const Recipes = () => {
-  const [allRecipes, setAllRecipes] = useState(null);
-  const [loading, setLoading] = useState(null);
+  const [allRecipes, setAllRecipes] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
-  async function getRecipes() {
-    const res = await axios.get("/all-recipes");
-    setAllRecipes(res.data);
-    setLoading(false);
-  }
+  const getRecipes = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`/all-recipes?page=${page}&limit=8`);
+      console.log(res.data);
+      setAllRecipes(prevRecipes => [...prevRecipes, ...res.data]);
+      // Check if the response has less items than the limit, indicating no more items to load
+      setHasMore(res.data.length === 8);
+    } catch (error) {
+      console.error("Failed to load recipes", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    setLoading(true);
     getRecipes();
-  }, []);
+  }, [page]);
 
-  if (loading) {
-    return <Loader />;
-  }
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >= document.body.offsetHeight &&
+        hasMore &&
+        !loading
+      ) {
+        setPage(prevPage => prevPage + 1);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasMore, loading]);
 
   return (
     <div className="container mx-auto px-4 py-12">
       <h1 className="text-center text-2xl md:text-4xl font-semibold mb-5">All Recipes</h1>
       <div className="grid grid-cols-2 gap-2 lg:grid-cols-5">
-        {allRecipes && allRecipes.map(recipe => <RecipeCard recipe={recipe} key={recipe._id} />)}
+        {allRecipes.map(recipe => (
+          <RecipeCard recipe={recipe} key={recipe._id} />
+        ))}
       </div>
+      {loading && <Loader />}
+      {!hasMore && <p className="text-center mt-4">No more recipes</p>}
     </div>
   );
 };

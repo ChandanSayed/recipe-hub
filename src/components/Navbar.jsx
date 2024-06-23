@@ -40,6 +40,7 @@ const Navbar = () => {
           coin: 50
         });
         dispatch(getUserData(res.data));
+        console.log(res.data);
       })
       .catch(error => {
         // Handle Errors here.
@@ -72,7 +73,7 @@ const Navbar = () => {
 
       <ul className="hidden items-center justify-between gap-10 md:flex">
         <NavLinks />
-        {userDetails?.name ? (
+        {userDetails?.user.name ? (
           <button
             className="bg-dark-white px-3 py-1.5 hover:bg-dark-blue hover:text-white rounded"
             onClick={handleLogout}

@@ -15,13 +15,20 @@ function App() {
   const auth = getAuth(app);
   const loading = useSelector(state => state.userData.loading);
   const location = useLocation();
+
   useEffect(() => {
     const fetchData = async user => {
       try {
-        const res = await axios.get(`/user?email=${user.email}`);
+        const res = await axios.post("/login", {
+          name: user.displayName,
+          email: user.email,
+          image: user.photoURL,
+          coin: 50
+        });
 
         if (res.data) {
           dispatch(getUserData(res.data));
+          console.log(res.data);
         } else {
           dispatch(getUserData(null));
         }

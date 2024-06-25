@@ -28,7 +28,6 @@ function App() {
 
         if (res.data) {
           dispatch(getUserData(res.data));
-          console.log(res.data);
         } else {
           dispatch(getUserData(null));
         }

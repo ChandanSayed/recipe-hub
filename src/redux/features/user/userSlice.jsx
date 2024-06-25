@@ -10,6 +10,9 @@ export const userDataSlice = createSlice({
     getUserData: (state, action) => {
       state.value = action.payload;
     },
+    getUser: (state, action) => {
+      state.value.user = action.payload;
+    },
     setLoading: (state, action) => {
       state.loading = action.payload;
     }
@@ -17,6 +20,6 @@ export const userDataSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { getUserData, setLoading } = userDataSlice.actions;
+export const { getUserData, setLoading, getUser } = userDataSlice.actions;
 
 export default userDataSlice.reducer;

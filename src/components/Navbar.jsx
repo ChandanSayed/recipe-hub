@@ -73,7 +73,7 @@ const Navbar = () => {
 
       <ul className="hidden items-center justify-between gap-10 md:flex">
         <NavLinks />
-        {userDetails?.user.name ? (
+        {userDetails?.user?.name ? (
           <button
             className="bg-dark-white px-3 py-1.5 hover:bg-dark-blue hover:text-white rounded"
             onClick={handleLogout}

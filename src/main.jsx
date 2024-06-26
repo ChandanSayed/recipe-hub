@@ -16,8 +16,8 @@ import PurchaseCoin from "./pages/PurchaseCoin.jsx";
 import RecipeDetails from "./pages/RecipeDetails.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 
-axios.defaults.baseURL = "https://recipe-hub-server.onrender.com/";
-// axios.defaults.baseURL = "http://localhost:8000/";
+// axios.defaults.baseURL = "https://recipe-hub-server.onrender.com/";
+axios.defaults.baseURL = "http://localhost:8000/";
 
 const router = createBrowserRouter([
   {

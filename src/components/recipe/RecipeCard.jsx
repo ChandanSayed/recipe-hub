@@ -10,7 +10,7 @@ function RecipeCard({ recipe }) {
   const navigate = useNavigate();
 
   const handleViewRecipe = async () => {
-    if (!userDetails.user.name) {
+    if (!userDetails?.user.name) {
       toast.error("Please login to view the recipe");
       return;
     }

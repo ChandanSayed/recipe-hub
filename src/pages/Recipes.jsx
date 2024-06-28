@@ -9,13 +9,16 @@ const Recipes = () => {
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   // const initialRender = useRef(true);
+  const [limit, setLimit] = useState(8);
+  const [search, setSearch] = useState("");
 
   const getRecipes = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`/all-recipes?page=${page}&limit=8`);
-      setAllRecipes(prevRecipes => [...prevRecipes, ...res.data]);
+      const res = await axios.get(`/all-recipes?page=${page}&limit=${limit}&search=${search}`);
+      setAllRecipes(prevRecipes => (page === 0 ? res.data : [...prevRecipes, ...res.data]));
       setHasMore(res.data.length === 8);
+      return res.data;
     } catch (error) {
       console.error("Failed to load recipes", error);
     } finally {
@@ -23,13 +26,14 @@ const Recipes = () => {
     }
   };
 
+  function handleSearch(e) {
+    setSearch(e.target.value);
+    setPage(0); // Reset to the first page for new search
+  }
+
   useEffect(() => {
-    // if (initialRender.current) {
-    //   initialRender.current = false;
-    //   return
-    // }
     getRecipes();
-  }, [page]);
+  }, [page, search]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,13 +52,29 @@ const Recipes = () => {
   return (
     <div className="container mx-auto px-4 py-12">
       <h1 className="text-center text-2xl md:text-4xl font-semibold mb-5">All Recipes</h1>
-      <div className="grid grid-cols-2 gap-2 lg:grid-cols-5">
-        {allRecipes.map(recipe => (
-          <RecipeCard recipe={recipe} key={recipe._id} />
-        ))}
+      <div className="flex gap-4">
+        <div>
+          <label htmlFor="search" className="text-lg md:text-2xl font-semibold inline-block mb-2">
+            Search by title
+          </label>
+          <input
+            type="text"
+            id="search"
+            placeholder="Search..."
+            className="w-full py-1 px-2 rounded border"
+            onChange={handleSearch}
+          />
+        </div>
+        <div>
+          <div className="grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-4">
+            {allRecipes.map(recipe => (
+              <RecipeCard recipe={recipe} key={recipe._id} />
+            ))}
+          </div>
+          {loading && <Loader />}
+          {!hasMore && <p className="text-center mt-4">No more recipes</p>}
+        </div>
       </div>
-      {loading && <Loader />}
-      {!hasMore && <p className="text-center mt-4">No more recipes</p>}
     </div>
   );
 };

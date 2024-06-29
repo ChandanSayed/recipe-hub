@@ -15,7 +15,7 @@ const AddRecipe = () => {
     youtubeCode: "",
     country: "",
     category: "",
-    creatorEmail: userDetails?.userDetails?.email,
+    creatorEmail: userDetails?.user?.email,
     watchCount: 0,
     purchased_by: []
   });
@@ -75,6 +75,7 @@ const AddRecipe = () => {
       setIsDisabled(false);
       setErrors({});
     }
+    setIsDisabled(false);
   };
 
   return (

@@ -70,7 +70,7 @@ function RecipeCard({ recipe }) {
       <div className="px-6 py-4">
         <div className="font-bold text-xl mb-2">{recipe.recipeName}</div>
         <p className="text-gray-700 text-base">
-          Purchased by: {recipe.purchased_by.length} People
+          Purchased by: {recipe.purchased_by.length} Person
         </p>
         <p className="text-gray-700 text-base">Creator Email: {recipe.creatorEmail}</p>
         <p className="text-gray-700 text-base">Country: {recipe.country}</p>

@@ -33,7 +33,8 @@ const RecipeDetail = ({ recipe }) => {
             <strong>Watch Count:</strong> {watchCount}
           </p>
           <p className="mb-4">
-            <strong>Purchased By:</strong> {purchased_by.join(", ")}
+            <strong>Purchased By:</strong>{" "}
+            {purchased_by.length > 0 ? purchased_by.join(", ") : "Did not make a sale yet!"}
           </p>
           <div className="mb-4">
             <iframe

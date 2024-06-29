@@ -15,7 +15,7 @@ const AddRecipe = () => {
     youtubeCode: "",
     country: "",
     category: "",
-    creatorEmail: userDetails?.email,
+    creatorEmail: userDetails?.userDetails?.email,
     watchCount: 0,
     purchased_by: []
   });
@@ -55,7 +55,10 @@ const AddRecipe = () => {
     e.preventDefault();
     setIsDisabled(true);
     if (validateForm()) {
-      const res = await axios.post("/add-recipe", recipeData);
+      const res = await axios.post("/add-recipe", {
+        recipe: recipeData,
+        token: userDetails.token
+      });
 
       if (res.data.insertedId) {
         notify();

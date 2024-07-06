@@ -52,7 +52,7 @@ const Recipes = () => {
   return (
     <div className="container mx-auto px-4 py-12">
       <h1 className="text-center text-2xl md:text-4xl font-semibold mb-5">All Recipes</h1>
-      <div className="flex gap-4">
+      <div className="flex flex-col md:flex-row gap-4">
         <div>
           <label htmlFor="search" className="text-lg md:text-2xl font-semibold inline-block mb-2">
             Search by title
@@ -65,7 +65,7 @@ const Recipes = () => {
             onChange={handleSearch}
           />
         </div>
-        <div>
+        <div className="w-full">
           <div className="grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-4">
             {allRecipes.map(recipe => (
               <RecipeCard recipe={recipe} key={recipe._id} />
